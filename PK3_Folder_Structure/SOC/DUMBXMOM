@@ -1,0 +1,13 @@
+Freeslot
+SPR2_OOF_
+SPR2_TRKU
+SPR2_TRKD
+
+Sprite2 SPR2_OOF_
+Default = SPR2_PAIN
+
+Sprite2 SPR2_TRKU
+Default = SPR2_SPNG
+
+Sprite2 SPR2_TRKD
+Default = SPR2_FALL
