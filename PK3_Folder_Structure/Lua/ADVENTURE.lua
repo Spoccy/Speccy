@@ -1,7 +1,7 @@
-// Speccy's Main Lua
-// Speccy - 2022
+-- Speccy's Main Lua
+-- Speccy - 2022
 
-// Don't take stuff from this Lua without getting my permission first.
+-- Don't take stuff from this Lua without getting my permission first.
 
 -- Leveling function, pretty nice. It's from Disgea by the way... just with some edits.
 
