@@ -1,4 +1,4 @@
-# Speccy
+# Speccy_SRB2
 
 This is my attempt at making a legit SRB2 (Sonic Robo Blast 2: https://srb2.org) character. I started work on the actual character back in 2020 when it was just tails sprites with a carbon skincolor. Now Speccy's... still a tails recolor, just that it's prerendered sprites. :dramahog:
 
