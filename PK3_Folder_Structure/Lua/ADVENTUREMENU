@@ -1,0 +1,311 @@
+// Whoops, I forgot to put the CD in the computer.
+// Rogue-like Inventory Menu - Separate because it makes life easy.
+
+// SRB2P check.
+
+if srb2p then return end
+
+rawset(_G, "RMF_SLIDER", 1)
+rawset(_G, "RMF_PAGE", 2)
+rawset(_G, "RMF_HIDEVALUE", 4)
+
+rawset(_G, "defineMenu", function(p)
+	if p.mo and p.mo.valid then
+		if p.mo.skin == "speccy" and p.speccy then
+			
+				p.speccy.inmenu = false
+				p.speccy.menu = {}
+				
+				local menu = p.speccy.menu
+				
+				menu.contents = {
+				
+					-- Page 1: Main Menu
+				
+					{
+						pagename = "MAIN MENU",
+						{name = "INVENTORY", description = "Check your Inventory.", value = 2, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "SPECIAL ITEMS", description = "Check your Special Items.", value = 6, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "SETTINGS", description = "Change your Adventure and\nMenu settings.", value = 3, flags = RMF_PAGE|RMF_HIDEVALUE},
+					},
+					
+					-- Page 2: Inventory
+					
+					{
+						pagename = "INVENTORY",
+						{name = "BACK", description = "Go back to the Main Menu.", value = 1, flags = RMF_PAGE|RMF_HIDEVALUE},
+					},
+					
+					-- Page 3: Main Settings
+					
+					{
+						pagename = "SETTINGS",
+						{name = "BACK", description = "Go back to the Main Menu.", value = 1, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "MENU SETTINGS", description = "Change your Menu Settings.", value = 4, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "DATA SETTINGS", description = "Change your Adventure Data\nSettings.", value = 5, flags = RMF_PAGE|RMF_HIDEVALUE},
+					},
+
+					-- Page 4: Menu Settings
+					
+					{
+						pagename = "MENU SETTINGS",
+						{name = "BACK", description = "Go back to the\nMain Settings.", value = 3, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "Menu Color", description = "Set your menu's color.", value = SKINCOLOR_CARBON, minvalue = 1, maxvalue = #skincolors-1, flags = RMF_HIDEVALUE, options = {}},
+					},
+					
+					-- Page 5: Data Settings
+					
+					{
+						pagename = "DATA SETTINGS",
+						{name = "BACK", description = "Go back to the\nMain Settings.", value = 3, flags = RMF_PAGE|RMF_HIDEVALUE},
+						{name = "Save Slot", description = "Set your save slot.", value = 1, minvalue = 1, maxvalue = 99, flags = 0},
+						{name = "Load Save", description = "Loads the save in \nthe above save slot.", value = 0, minvalue = 0, maxvalue = 1, flags = RMF_HIDEVALUE, options = {"",""}},
+						{name = "Delete Save", description = "Deletes the save \nin the above save slot.", value = 0, minvalue = 0, maxvalue = 1, flags = RMF_HIDEVALUE, options = {"",""}},
+					},
+					
+					-- Page 6: Special Items
+					
+					{
+						pagename = "SPECIAL ITEMS",
+						{name = "BACK", description = "Go back to the Main Menu.", value = 1, flags = RMF_PAGE|RMF_HIDEVALUE},
+					},
+					
+					-- Page 7: Shop
+					
+					{
+						pagename = "SHOP",
+						{name = "BACK", description = "Exit the shop.", value = 1, flags = RMF_PAGE|RMF_HIDEVALUE},
+					},
+				}
+				
+				menu.pointer = 1
+				menu.page = 1
+				
+				for i=1, #skincolors-1 do
+					p.speccy.menu.contents[4][2].options[i+1] = skincolors[i].name
+				end
+				
+		end
+	end
+end)
+
+addHook("PlayerSpawn", function(p)
+	if p.mo and p.mo.valid then
+		if p.mo.skin == "speccy" and p.speccy then
+			if p.speccy.menu == nil then
+				defineMenu(p)
+			end
+		end
+	end
+end)
+
+addHook("PlayerThink", function(p)
+
+	if p.mo and p.mo.valid then
+		if p.mo.skin == "speccy" and p.speccy and P_IsObjectOnGround(p.mo) then
+			
+				if p.speccy.menu == nil then
+					defineMenu(p)
+				end
+			
+				if not (p.cmd.buttons & BT_TOSSFLAG) then
+					p.menuready = true
+					p.menutap = false
+				elseif p.menuready then
+					p.menuready = false
+					p.menutap = true
+				else
+					p.menuready = false
+					p.menutap = false
+				end
+			
+				if p.speccy.menu and p.speccy.inmenu then
+				
+					local menu = p.speccy.menu
+					local contents = menu.contents[menu.page]
+					
+					p.powers[pw_flashing] = 1
+					p.pflags = $|PF_JUMPSTASIS
+					p.mo.momx = 0
+					p.mo.momy = 0
+					
+					if not (p.cmd.forwardmove > 0) then
+						p.upready = true
+						p.uptap = false
+					elseif p.upready then
+						p.upready = false
+						p.uptap = true
+					else
+						p.upready = false
+						p.uptap = false
+					end
+					
+					if not (p.cmd.forwardmove < 0) then
+						p.downready = true
+						p.downtap = false
+					elseif p.downready then
+						p.downready = false
+						p.downtap = true
+					else
+						p.downready = false
+						p.downtap = false
+					end
+					
+					if not (p.cmd.sidemove > 0) then
+						p.rightready = true
+						p.righttap = false
+					elseif p.rightready then
+						p.rightready = false
+						p.righttap = true
+					else
+						p.rightready = false
+						p.righttap = false
+					end
+					
+					if not (p.cmd.sidemove < 0) then
+						p.leftready = true
+						p.lefttap = false
+					elseif p.leftready then
+						p.leftready = false
+						p.lefttap = true
+					else
+						p.leftready = false
+						p.lefttap = false
+					end
+				
+					if not (p.cmd.buttons & BT_JUMP) then
+						p.confirmready = true
+						p.confirmtap = false
+					elseif p.confirmready then
+						p.confirmready = false
+						p.confirmtap = true
+					else
+						p.confirmready = false
+						p.confirmtap = false
+					end
+					
+					if p.menutap then
+						p.speccy.inmenu = false
+					end
+					
+					if p.uptap then
+						menu.pointer = $ - 1
+						S_StartSound(p.mo, sfx_menu1, p)
+					elseif p.downtap then
+						menu.pointer = $ + 1
+						S_StartSound(p.mo, sfx_menu1, p)
+					end
+					
+					if menu.pointer < 1 then
+						menu.pointer = 1
+					elseif menu.pointer > #contents then
+						menu.pointer = #contents
+					end
+					
+					if p.confirmtap then
+						if (contents[menu.pointer].flags & RMF_PAGE) then
+							menu.page = contents[menu.pointer].value
+							menu.pointer = 1
+						else
+							if contents[menu.pointer].value < contents[menu.pointer].maxvalue then
+								contents[menu.pointer].value = $+1
+							else
+								contents[menu.pointer].value = contents[menu.pointer].minvalue
+							end
+						end
+					end
+					
+					if p.lefttap then
+						if (contents[menu.pointer].flags & RMF_SLIDER) or not (contents[menu.pointer].flags & RMF_PAGE) then
+							if contents[menu.pointer].value > contents[menu.pointer].minvalue then
+								contents[menu.pointer].value = $-1
+							else
+								contents[menu.pointer].value = contents[menu.pointer].maxvalue
+							end
+						end
+					end
+					
+					if p.righttap then
+						if (contents[menu.pointer].flags & RMF_SLIDER) or not (contents[menu.pointer].flags & RMF_PAGE) then
+							if contents[menu.pointer].value < contents[menu.pointer].maxvalue then
+								contents[menu.pointer].value = $+1
+							else
+								contents[menu.pointer].value = contents[menu.pointer].minvalue
+							end
+						end
+					end
+				
+				else
+				
+					if p.menutap then
+						p.speccy.inmenu = true
+					end
+				
+				end
+		end
+	end
+
+end)
+
+hud.add(function(v, p)
+	if p.mo and p.mo.valid then
+		if p.mo.skin == "speccy" and p.speccy then
+				if p.speccy.menu ~= nil and p.speccy.inmenu then
+				
+					local menu = p.speccy.menu
+					local menux = 30
+					local menuy = 28
+					local contents = menu.contents
+					
+					v.drawFill(menux+2, menuy-2, 140, #contents[menu.page]*16+20, skincolors[p.speccy.menu.contents[4][2].value].ramp[12])
+					v.drawFill(menux+4, menuy, 136, #contents[menu.page]*16+16, skincolors[p.speccy.menu.contents[4][2].value].ramp[8])
+					if menu.page == 2 then
+						v.drawString(menux+72, menuy-16, "SP: " + p.speccy.sp + "/" + p.speccy.maxsp, nil, "center")
+					end
+					v.drawString(menux+72, menuy+4, contents[menu.page].pagename, nil, "center")
+					v.draw(menux-16, menuy+4+menu.pointer*16, v.cachePatch("M_CURSOR"))
+				
+					for i=1, #contents[menu.page] do
+					
+						local item = contents[menu.page][i]
+						
+						v.drawString(menux+8, menuy+4+i*16, item.name, nil)
+						
+						if item.description then
+							
+							v.drawString(menux+128+16, menuy+2, contents[menu.page][menu.pointer].description, nil, "thin")
+							
+						end
+					
+						if not (item.flags & RMF_HIDEVALUE) then
+						
+							if not (item.flags & RMF_SLIDER) then
+								v.drawString(menux+136, menuy+4+i*16, item.value, nil, "thin-right")
+							else
+								v.drawString(menux+136-48, menuy+4+i*16, item.value, nil, "thin-right")
+							end
+						
+						elseif item.options then
+						
+							v.drawString(menux+136, menuy+4+i*16, item.options[item.value+1], nil, "thin-right")
+						
+						end
+					
+					end
+					
+					v.drawFill(2, 200-43, v.stringWidth("MOVE")+4, 14, skincolors[p.speccy.menu.contents[4][2].value].ramp[12])
+					v.drawFill(3, 200-42, v.stringWidth("MOVE")+2, 12, skincolors[p.speccy.menu.contents[4][2].value].ramp[8])
+					v.drawString(4, 200 - 40, "MOVE MOVE CURSOR (AND VALUES)")
+					
+					v.drawFill(2, 200-29, v.stringWidth("JUMP")+4, 14, skincolors[p.speccy.menu.contents[4][2].value].ramp[12])
+					v.drawFill(3, 200-28, v.stringWidth("JUMP")+2, 12, skincolors[p.speccy.menu.contents[4][2].value].ramp[8])
+					v.drawString(4, 200 - 26, "JUMP SELECT")
+					
+					v.drawFill(2, 200-15, v.stringWidth("TF")+4, 14, skincolors[p.speccy.menu.contents[4][2].value].ramp[12])
+					v.drawFill(3, 200-14, v.stringWidth("TF")+2, 12, skincolors[p.speccy.menu.contents[4][2].value].ramp[8])
+					v.drawString(4, 200 - 12, "TF CLOSE MENU")
+				
+				end
+		end
+	end	
+end)

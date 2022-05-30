@@ -1,0 +1,45 @@
+-- Kirby Support... I don't really like Kirbo.
+
+if not(kirbyabilitytable)
+    rawset(_G, "kirbyabilitytable", {})
+end
+
+kirbyabilitytable["speccy"] = 10
+
+-- MRCE Support, probably the most supported.
+
+addHook("PlayerThink", function(p)
+	if p.mo and p.mo.valid then
+		if p.mrce then
+		
+			mrcebossesadded = false
+		
+			-- Check for Egg Mobile X since it also lets us know if MRCE bosses were added.
+		
+			for i=1, #adventureBossTable do
+				if adventureBossTable[i][1] == "Egg Mobile X" then
+					mrcebossesadded = true
+				end
+			end
+			
+			if not mrcebossesadded then
+				adventureBossTable[MT_EGGANIMUS] = {"Egg Animus", 35, 150}
+				adventureBossTable[MT_EGGANIMUS_EX] = {"Egg Animus EX", 35, 350}
+				adventureBossTable[MT_EGGBALLER] = {"Egg FireBaller", 25, 30}
+				adventureBossTable[MT_EGGEBOMBER] = {"Egg E-Bomber", 45, 50}
+				adventureBossTable[MT_EGGFREEZER] = {"Egg Freezer", 35, 75}
+				adventureBossTable[MT_FBOSS] = {"Egg Fighter", 45, 100}
+				adventureBossTable[MT_FBOSS2] = {"Egg Fighter", 55, 150}
+				adventureBossTable[MT_XBOSS] = {"Egg Mobile X", 35, 500}
+			end
+		
+			p.mrce.customskin = 2
+			p.mrce.canhyper = false
+			if mrce_hyperunlocked == true then	
+				if p.speccy.roguelike.extraexpbonuses < 10 then
+					p.speccy.roguelike.extraexpbonuses = $ + 10
+				end
+			end
+		end
+	end
+end)

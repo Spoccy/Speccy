@@ -1,0 +1,88 @@
+if not srb2p then return end
+
+freeslot("SPR2_SSIT", "SPR2_SPST", "SPR2_SPSR", "SPR2_SPFL", "SPR2_SPWK", "SPR2_SPRN", "SPR2_SPPN", "SPR2_SPAA", "SPR2_SPRV", "SPR2_SPEK", "SPR_FLFA")
+
+charStats["speccy"] = {
+	name = "Speccy",
+	basehp = 100,
+	basesp = 30,
+	persona = "floofy",
+	melee_natk = "handsonic_melee",
+	
+	wep = "melee_01",
+	weptype = WPT_GENERICMELEE,
+	
+	atk = 25,
+	acc = 100,
+	crit = 3,
+	
+	anim_stand =        {SPR_PLAY, A, 8, "SPR2_SPST"},                  -- standing
+    anim_stand_hurt =   {SPR_PLAY, A, 1, "SPR2_SHRT"},                  -- standing (low HP) *
+    anim_stand_bored =  {SPR_PLAY, A, B, 8, "SPR2_WAIT"},                  -- standing (occasionally plays after anim_stand has played several times)
+    anim_guard =        {SPR_PLAY, A, 1, "SPR2_GARD"},                  -- guarding
+    anim_move =         {SPR_PLAY, A, B, C, D, 2, "SPR2_SPWK"},   -- moving
+    anim_run =          {SPR_PLAY, A, B, C, D, 2, "SPR2_SPRN"},   -- guess what
+    anim_atk =          {SPR_PLAY, A, 2, "SPR2_ROLL"},         -- attacking
+    anim_aoa_end =      {SPR_PLAY, A, 2, "SPR2_SPAA"},         -- jumping out of all-out attack
+    anim_hurt =         {SPR_PLAY, A, 35, "SPR2_SPPN"},                 -- taking damage
+    anim_getdown =      {SPR_PLAY, A, 1, "SPR2_SPPN"},                  -- knocked down from weakness / crit *
+    anim_downloop =     {SPR_PLAY, A, 1, "SPR2_SSIT"},                  -- is down
+    anim_getup =        {SPR_PLAY, A, 1, "SPR2_SPSR"},         -- gets up from down
+    anim_death =        {SPR_PLAY, A, 30, "SPR2_SPDD"},                 -- dies
+    anim_revive =       {SPR_PLAY, A, 1, "SPR2_SPRV"},         -- gets revived
+	anim_evoker =		{SPR_PLAY, A, 2, "SPR2_SPEK"},	-- holding evoker to head
+	anim_evoker_shoot =	{SPR_PLAY, A, 2, "SPR2_SPEK"},		-- shooting evoker
+	
+	icon = "ICO_SPEC",
+	hudbust = "SONIC_H",
+	hudaoa = "H_SONAOA",
+	hudcutin = "SONIC_A",
+	aoa_quote = "There's no point\nin trying to\nbeat me!",
+	
+	tip = "Speccy is Ice Elemental user whose small and vulnerable to more elements, but in return they have higher stats than most characters."
+}
+
+personaList["floofy"] = {
+	name = "Speccy",
+	arcana = nil,
+
+	anim_idle = {SPR_NULL, A, 8},
+	anim_atk = {SPR_NULL, A, 2},
+
+	strength = 5,
+	magic = 10,
+	endurance = 5,
+	luck = 5,
+	agility = 12,
+	weak = ATK_CURSE|ATK_FIRE,
+	resist = ATK_ICE|ATK_BLESS,
+	skills = {
+		{"bufu", 1}, {"dia", 4},
+		{"hama", 8}, {"media", 11},
+		{"mabufu", 15}, {"makouha", 19},
+		{"diarama", 23}, {"makanda", 26},
+		{"makouga", 30, "makouha"}, {"hamaon", 32, "hama"},
+		{"bufula", 34, "bufu"}, {"mamakanda", 37, "makanda"},
+		{"mediarama", 41, "media"}, {"ice boost", 45, "mabufu"},
+		{"bufudyne", 52, "bufula"}, {"fatal end", 56, "giant slice"},
+		{"diarahan", 58, "diarama"}, {"ice amp", 64, "ice boost"},
+		{"mabufudyne", 67, "mabufula"}, {"niflheim", 75, "bufudyne"},
+	},
+}
+
+addHook("PlayerThink", function(p)
+	if p.mo and p.mo.valid then
+		if p.mo.skin == "speccy" and not p.speccy then
+			SpeccyVars(p)
+		else
+			p.speccy.modes[1][2] = 0
+			p.speccy.modes[2][2] = 0
+			p.speccy.modes["anime"][2] = 0
+			p.speccy.modes["persona"][2] = 1
+		end
+		
+		if p.speccy.state == S_PLAY_STND then
+			p.mo.sprite = SPR2_SPST
+		end
+	end
+end)
