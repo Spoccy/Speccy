@@ -6,7 +6,7 @@ Jokes aside, she plays very differently compared to most other characters.
 
 She contains (or will contain) the following:
 
-An HP System, Leveling System, XP System, and Item System.               
+An HP System, Leveling System, EXP System, and Item System.               
 (Custom Items, and Custom Boss DMG / XP values are supported. You can force a level up as well.)
 
 Multiple HUDs to choose from, along with allowing more custom HUDs via Lua support.            
