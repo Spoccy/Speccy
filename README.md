@@ -20,5 +20,5 @@ And some unfinished ones too, like MRCE! (Mystic Realm Community Edition: https:
 
 I hope you'll enjoy it once it's a finished product!
 
-![cute speccy art by minty](https://cdn.discordapp.com/attachments/358041245798367242/976691155179798549/cssspeccy.png)
+![cute speccy art by minty](https://cdn.discordapp.com/attachments/358041245798367242/976691155179798549/cssspeccy.png)        
 Speccy's Character Select Screen Portrait by archie#3752.
