@@ -146,8 +146,6 @@ end
 
 -- It makes sure that Speccy exists, and that her customHuds table exists.
 
--- Part 1: The Actual HUD.
-
 -- Starting with the actual HUD here.
 -- You'll be wanting to read a lot of Speccy's stats here so I made a list for you!
 
