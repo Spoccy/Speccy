@@ -153,7 +153,7 @@ end
 
 /*
 
-    p.speccy	- This is your main array, always check for this after making sure the player exists.
+    	p.speccy	- This is your main array, always check for this after making sure the player exists.
 	p.speccy.hp - Your health.
 	p.speccy.maxhp - Your maximum health.
 	p.speccy.level - Your level.
